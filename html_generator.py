@@ -123,9 +123,9 @@ document.addEventListener('keydown', e => {
     e = e || window.event;
     pageNext = [37, 38, 33];
     pagePrev = [39, 40, 34];
-    if ((e.keyCode == '37') || (e.keyCode == '38')) // left/up
+    if (pageNext.indexOf(e.keyCode) !== -1)
         movePages(-1);
-    else if ((e.keyCode == '39') || (e.keyCode == '40'))// right/down
+    else if (pagePrev.indexOf(e.keyCode) !== -1)
        movePages(1);
 });
 
