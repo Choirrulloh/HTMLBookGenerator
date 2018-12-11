@@ -46,6 +46,10 @@ with open(new_temp_file_path, 'r') as f:
 # remove the temporary directory - we have the file in memory, the file on dict is not needed anymore
 rmtree(temp_dir)
 
+head_html = """
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+"""
+
 upper_html = """
 <style>
 #document{
@@ -168,6 +172,9 @@ window.onload = _ => {
 
 # disable all attributes changing font size or color
 content = content.replace("font-size", "nope").replace("size=\"", "sizeIs=\"").replace("color=\"", "coolor=\"")
+
+# put head code right after the head tag
+content = re.sub("<head(.*>)", "<head \\1" + head_html, content, re.I | re.M)
 
 # put upper body code right after the body tag
 content = re.sub("<body(.*>)", "<body \\1" + upper_html, content, re.I | re.M)
