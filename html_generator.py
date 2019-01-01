@@ -92,6 +92,10 @@ html, body {
 #pageNum {
     text-align: center;
 }
+
+pre {
+    white-space: pre-wrap;
+}
     </style>
     <style id="colorPalette">
     </style>
