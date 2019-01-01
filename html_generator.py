@@ -39,6 +39,8 @@ try:
     output_file_path = argv[2]
 except IndexError:
     output_file_path = basename(new_temp_file_path)
+    
+output_file_path = abspath(output_file_path)
 
 with open(new_temp_file_path, 'r') as f:
     content = f.read()
@@ -185,4 +187,4 @@ content = re.sub("</body(.*>)", lower_html + "</body \\1", content, re.I | re.M)
 with open(output_file_path, 'w') as f:
     f.write(content)
 
-print('Your new html doc was saved as %s' % abspath(output_file_path))
+print('Your new html doc was saved as %s' % output_file_path)
