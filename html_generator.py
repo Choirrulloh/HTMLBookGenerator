@@ -150,16 +150,22 @@ document.addEventListener('keydown', e => {
         movePages(-1);
     else if (pagePrev.indexOf(e.keyCode) !== -1)
        movePages(1);
+    else if (e.key.toLowerCase() === "f")
+       toggleFullscreen();
 });
 
 // Switch fullscreen when stats are pressed
 $('#info').onclick = (e) => {
+    toggleFullscreen();
+    e.stopPropagation();
+}
+
+function toggleFullscreen(){
     if(document.fullscreenElement)
         document.exitFullscreen();
     else
         body.requestFullscreen();
     showStats();
-    e.stopPropagation();
 }
 
 function showStats(){
@@ -197,7 +203,9 @@ p,a,span,#pageNum, li, table, td, tr, #document {
 `;}
 
 window.onload = _ => {
-    setColorPalette("#1e1e1e", "#effdff", "20px", "1.5");
+    setColorPalette("#1e1e1e", "#effdff", "20px", "1.5"); // dark pallete
+    // setColorPalette("#ffffff", "#000000", "20px", "1.5"); // light pallete
+    // setColorPalette("#fee5b3", "#695445", "20px", "1.5"); // warm pallete
     showStats();  // this call is required to initialize GUI
     countscrollHeight();
     showStats();  // this call is required because first call used scrollHeight which was null at the time
