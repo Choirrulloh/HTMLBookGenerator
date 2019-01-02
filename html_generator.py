@@ -121,7 +121,7 @@ const currentColorPalette = {bck: null, fg: null, fnt: null, lh: null};
 
 let scrollHeight = null;
 
-function countscrollHeight(){
+function countScrollHeight(){
     let div = document.createElement('div');
     div.style.position = "fixed";
     div.style.visibility = "hidden";
@@ -132,7 +132,7 @@ function countscrollHeight(){
 }
 
 function movePages(pageDelta){
-    countscrollHeight();
+    countScrollHeight();
     doc.scrollTop += pageDelta * scrollHeight;
     showStats();
 }
@@ -165,7 +165,12 @@ function toggleFullscreen(){
         document.exitFullscreen();
     else
         body.requestFullscreen();
-    showStats();
+    for (let time of [1, 100, 250, 500, 1000, 1500, 2000])
+        setTimeout(() => {
+            showStats();
+            countScrollHeight();
+            showStats();
+        }, time);
 }
 
 function showStats(){
@@ -207,7 +212,7 @@ window.onload = _ => {
     // setColorPalette("#ffffff", "#000000", "20px", "1.5"); // light pallete
     // setColorPalette("#fee5b3", "#695445", "20px", "1.5"); // warm pallete
     showStats();  // this call is required to initialize GUI
-    countscrollHeight();
+    countScrollHeight();
     showStats();  // this call is required because first call used scrollHeight which was null at the time
 }
 
