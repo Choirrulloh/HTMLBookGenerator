@@ -152,6 +152,16 @@ document.addEventListener('keydown', e => {
        movePages(1);
 });
 
+// Switch fullscreen when stats are pressed
+$('#info').onclick = (e) => {
+    if(document.fullscreenElement)
+        document.exitFullscreen();
+    else
+        body.requestFullscreen();
+    showStats();
+    e.stopPropagation();
+}
+
 function showStats(){
     let percentageNum = (doc.scrollTop + doc.getBoundingClientRect().height) * 100 / doc.scrollHeight;
     percentage.style.width = `${percentageNum}%`;
@@ -174,7 +184,7 @@ function setColorPalette(backgroundColor=null, foregroundColor=null, fontSize=nu
     if (lineHeight !== null)
         currentColorPalette.lh = lineHeight;
     colorPalette.innerHTML = `
-body, #info {
+html, body, #info {
     background: ${currentColorPalette.bck} !important;
 }
 
