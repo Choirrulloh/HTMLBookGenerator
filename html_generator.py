@@ -117,10 +117,23 @@ const percentage = $('#percentage');
 const pageNum = $('#pageNum');
 
 
-const currentColorPalette = {bck: null, fg: null, fnt: null};
+const currentColorPalette = {bck: null, fg: null, fnt: null, lh: null};
+
+let scrollHeight = null;
+
+function countscrollHeight(){
+    let div = document.createElement('div');
+    div.style.position = "fixed";
+    div.style.visibility = "hidden";
+    div.style.width = `calc(${currentColorPalette.fnt} * ${currentColorPalette.lh})`;
+    document.body.appendChild(div);
+    scrollHeight = doc.getBoundingClientRect().height - div.getBoundingClientRect().width;
+    div.parentNode.removeChild(div);
+}
 
 function movePages(pageDelta){
-    doc.scrollTop += pageDelta * body.getBoundingClientRect().height * 0.9;
+    countscrollHeight();
+    doc.scrollTop += pageDelta * scrollHeight;
     showStats();
 }
 
@@ -142,20 +155,24 @@ document.addEventListener('keydown', e => {
 function showStats(){
     let percentageNum = (doc.scrollTop + doc.getBoundingClientRect().height) * 100 / doc.scrollHeight;
     percentage.style.width = `${percentageNum}%`;
-    let pages = Math.round(doc.scrollHeight / (body.getBoundingClientRect().height * 0.9));
+    
+    let pages = Math.round(doc.scrollHeight / scrollHeight);
     let currentPage = Math.round(
-        (doc.scrollTop + doc.getBoundingClientRect().height) / (body.getBoundingClientRect().height * 0.9)
+        (doc.scrollTop + doc.getBoundingClientRect().height) / scrollHeight
     );
+    
     pageNum.innerText = `${currentPage}/${pages}`;
 }
 
-function setColorPalette(backgroundColor=null, foregroundColor=null, fontSize=null){
+function setColorPalette(backgroundColor=null, foregroundColor=null, fontSize=null, lineHeight=null){
     if (backgroundColor !== null)
         currentColorPalette.bck = backgroundColor;
     if (foregroundColor !== null)
         currentColorPalette.fg = foregroundColor;
     if (fontSize !== null)
         currentColorPalette.fnt = fontSize;
+    if (lineHeight !== null)
+        currentColorPalette.lh = lineHeight;
     colorPalette.innerHTML = `
 body, #info {
     background: ${currentColorPalette.bck} !important;
@@ -165,12 +182,15 @@ p,a,span,#pageNum, li, table, td, tr, #document {
     color: ${currentColorPalette.fg} !important;
     font-size: ${currentColorPalette.fnt} !important;
     border-color:  ${currentColorPalette.fg} !important;
+    line-height: ${currentColorPalette.lh}  !important;
 }
 `;}
 
 window.onload = _ => {
-    setColorPalette("#1e1e1e", "#effdff", "20px");
-    showStats();
+    setColorPalette("#1e1e1e", "#effdff", "20px", "1.5");
+    showStats();  // this call is required to initialize GUI
+    countscrollHeight();
+    showStats();  // this call is required because first call used scrollHeight which was null at the time
 }
 
 </script>
