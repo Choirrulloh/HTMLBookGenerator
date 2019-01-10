@@ -205,7 +205,7 @@ html, body, #info {
     background: ${currentColorPalette.bck} !important;
 }
 
-p,a,span,#pageNum, li, table, td, tr, #document {
+p,a,span,#pageNum, li, table, td, tr, #document, h1, h2, h3, h4, h5, h6, h7, h8, h9 {
     color: ${currentColorPalette.fg} !important;
     font-size: ${currentColorPalette.fnt} !important;
     border-color:  ${currentColorPalette.fg} !important;
