@@ -58,7 +58,7 @@ upper_html = """
     overflow: hidden;
     height: 100%;
     width: calc(100% - .5em);
-    max-width: 35cm;
+    max-width: 30cm;
 }
 
 html, body {
