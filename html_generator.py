@@ -109,6 +109,8 @@ pre {
 
 lower_html = """
 </div><script>
+let disableClicks = false;  // can be set to true from developer tools in browser for easier debugging
+
 const $ = document.querySelector.bind(document);
 const body = $('body');
 const doc = $('#document');
@@ -138,6 +140,8 @@ function movePages(pageDelta){
 }
 
 document.addEventListener('click', (e) => {
+    if (disableClicks)
+        return;
     pageDelta = e.pageX > (body.getBoundingClientRect().width / 2) ? 1 : -1;
     movePages(pageDelta);
 });
@@ -156,6 +160,8 @@ document.addEventListener('keydown', e => {
 
 // Switch fullscreen when stats are pressed
 $('#info').onclick = (e) => {
+    if (disableClicks)
+        return;
     toggleFullscreen();
     e.stopPropagation();
 }
