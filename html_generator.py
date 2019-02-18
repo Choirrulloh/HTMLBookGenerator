@@ -11,6 +11,9 @@ from subprocess import call
 from os.path import isfile, join, basename, abspath
 from os import listdir
 from shutil import rmtree
+from codecs import open
+from mimetypes import MimeTypes
+
 
 SOFFICE_PATH = "soffice"
 
@@ -33,7 +36,7 @@ temp_dir = tempfile.mkdtemp()
 call([SOFFICE_PATH, "--headless", "--convert-to", "html", "--outdir", temp_dir, argv[1]])
 time.sleep(2)
 
-new_temp_file_path = join(temp_dir, listdir(temp_dir)[0])
+new_temp_file_path = join(temp_dir, [file for file in listdir(temp_dir) if file.endswith('.html')][0])
 
 try:
     output_file_path = argv[2]
@@ -42,7 +45,7 @@ except IndexError:
     
 output_file_path = abspath(output_file_path)
 
-with open(new_temp_file_path, 'r') as f:
+with open(new_temp_file_path, 'r', 'utf-8', errors='replace') as f:
     content = f.read()
 
 # remove the temporary directory - we have the file in memory, the file on dict is not needed anymore
@@ -237,7 +240,7 @@ content = re.sub("<body(.*>)", "<body \\1" + upper_html, content, re.I | re.M)
 # put lower body code right before the closing of body tag
 content = re.sub("</body(.*>)", lower_html + "</body \\1", content, re.I | re.M)
 
-with open(output_file_path, 'w') as f:
+with open(output_file_path, 'w', 'utf-8') as f:
     f.write(content)
 
 print('Your new html doc was saved as %s' % output_file_path)
