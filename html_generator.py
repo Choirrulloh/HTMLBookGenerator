@@ -5,6 +5,7 @@
 import re
 import time
 import tempfile
+import base64
 
 from sys import argv
 from subprocess import call
@@ -13,6 +14,8 @@ from os import listdir
 from shutil import rmtree
 from codecs import open
 from mimetypes import MimeTypes
+from urllib.request import pathname2url
+from urllib.parse import unquote
 
 
 SOFFICE_PATH = "soffice"
@@ -47,9 +50,6 @@ output_file_path = abspath(output_file_path)
 
 with open(new_temp_file_path, 'r', 'utf-8', errors='replace') as f:
     content = f.read()
-
-# remove the temporary directory - we have the file in memory, the file on dict is not needed anymore
-rmtree(temp_dir)
 
 head_html = """
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -239,6 +239,34 @@ content = re.sub("<body(.*>)", "<body \\1" + upper_html, content, re.I | re.M)
 
 # put lower body code right before the closing of body tag
 content = re.sub("</body(.*>)", lower_html + "</body \\1", content, re.I | re.M)
+
+# base64 include all external files
+mime = MimeTypes()
+while True:
+    result = re.search('(<img)(.*src=")(.*?)(".*?>)', content, re.I | re.M)
+    if result is None or result.groups()[2].endswith('base64-ed '):
+        break
+
+    external_file = join(temp_dir, basename(unquote(result.groups()[2])))
+    if not isfile(external_file):
+        pass
+
+    file_url = pathname2url(external_file)
+    mime_type = mime.guess_type(file_url)[0]
+    if mime_type is None:
+        mime_type = 'unknown/unknown'
+        print('WRONG MIME', mime.guess_type(file_url), file_url, external_file)
+    b64_data = "data:" + mime_type + ";base64,"
+    with open(external_file, 'rb') as f:
+        b64_data += base64.b64encode(f.read()).decode('ascii')
+    content = re.sub('(<img)(.*src=")(.*?>)', '<b64-img' + result.groups()[1] + b64_data + result.groups()[3],
+                     content, flags=re.I | re.M, count=1)
+    del b64_data
+
+content = content.replace('<b64-img', '<img')
+
+# remove the temporary directory - we have the file in memory, the file on dict is not needed anymore
+rmtree(temp_dir)
 
 with open(output_file_path, 'w', 'utf-8') as f:
     f.write(content)
